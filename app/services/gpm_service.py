@@ -23,17 +23,18 @@ class GpmService:
             Profile data if successful, None otherwise
         """
         if True:
-        # if os.getenv('APP_ENV') == 'localhost':
+            # if os.getenv('APP_ENV') == 'localhost':
             return {
                 "success": True,
                 "data": {
                     "id": "123e4567-e89b-12d3-a456-426614174000",
-                    "name": "customized_profile",
+                    "name": "chromium_customized_profile_1747565948",
                     "raw_proxy": "",
                     "browser_type": "chromium",
-                    "browser_version": "120.0.6099.28",
+                    "browser_version": "136.0.7103.25",
                     "group_id": "987fcdeb-51a2-3e4b-9876-543210fedcba",
-                    "profile_path": "/var/www/Evalutee/mockup/playwright_profiles/customized_profile",
+                    # "profile_path": "/var/www/Evalutee/mockup/playwright_profiles/customized_profile",
+                    "profile_path": r"D:\evo\mockup\playwright_profiles\chromium_customized_profile_1747565948",
                     # "browser_type": "firefox",
                     # "browser_version": "119.0",
                     # "group_id": "987fcdeb-51a2-3e4b-9876-543210fedcba",

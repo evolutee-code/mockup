@@ -1,5 +1,6 @@
 import asyncio
 import random
+import time
 import traceback
 
 from services.gmail_service import GmailService
@@ -26,7 +27,7 @@ class Mockup:
     async def getProfileBrowser(self):
         profile = await self.gpm_service.getProfile('123e4567-e89b-12d3-a456-426614174000')
         self.profile = profile['data']
-        # profile_path = await self.browser_service.create_profile('customized_profile', True, 'firefox')
+        # profile_path = await self.browser_service.create_profile(f'customized_profile_{int(time.time())}', True, 'chromium')
         # print(profile_path)
 
     async def loadBrowser(self):
@@ -41,7 +42,7 @@ class Mockup:
             traceback.print_exc()
             return None
 
-    async def checkLoginGmail(self) -> bool:
+    async def setBrowser(self):
         self.gmail_service = GmailService(
             browser=self.browser,
             context=self.context,
@@ -49,17 +50,13 @@ class Mockup:
             email=self.email,
             email_pw=self.email_pw,
             two_fa_secret=self.two_fa_secret)
+
+    async def checkLoginGmail(self) -> bool:
+        await self.setBrowser()
         return await self.gmail_service.checkLoginGmail()
 
     async def loginGmail(self):
-        self.gmail_service = GmailService(
-            browser=self.browser,
-            context=self.context,
-            page=self.page,
-            email=self.email,
-            email_pw=self.email_pw,
-            two_fa_secret=self.two_fa_secret)
-
+        await self.setBrowser()
         return await self.gmail_service.loginGmail()
 
     async def loginOpenAI(self):
@@ -69,21 +66,10 @@ class Mockup:
             wait_until="networkidle"
         )
 
-        email_input = await self.page.wait_for_selector('input[type="email"]')
-        await email_input.fill(self.email)
-        await email_input.press('Enter')
-        # Wait for navigation to complete
+        email_button = await self.page.wait_for_selector('button[value="google"]')
+        await asyncio.sleep(random.uniform(4, 8))
+        await email_button.click()
         await self.page.wait_for_load_state("networkidle")
-
-        # Check and select specific Google account if multiple accounts present
-        try:
-            account = await self.page.wait_for_selector(f'div[data-identifier="{self.email}"]', timeout=5000)
-            if account:
-                await account.click()
-                await self.page.wait_for_load_state("networkidle")
-        except:
-            # Account selection is not needed or already logged in with a correct account
-            pass
 
     async def sendPromtImage(self):
         print('sendPromt')
@@ -111,9 +97,9 @@ async def main():
     # await mockup.getImageFromOpenAI()
     # await mockup.sendImageToSystem()
     #
-    # await mockup.closeBrowser()
 
     await asyncio.sleep(20)
+    await mockup.closeBrowser()
 
 
 if __name__ == '__main__':

@@ -48,12 +48,14 @@ class GmailService:
 
             await self.page.keyboard.press("Enter")
 
-            code_input = await self.page.wait_for_selector("input[type='text']")
+            code_input = await self.page.wait_for_selector("input[type='tel']")
 
             otp = await self.get2FA()
 
             if not otp:
                 return False
+
+            await asyncio.sleep(random.uniform(5, 10))
 
             await code_input.fill(otp)
 
@@ -67,7 +69,7 @@ class GmailService:
     async def get2FA(self):
         try:
             code = generate_totp(self.two_fa_secret)
-            return code['code']
+            return code['code'].strip()
         except Exception as e:
             traceback.print_exc()
             return None

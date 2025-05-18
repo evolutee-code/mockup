@@ -151,12 +151,36 @@ class PlaywrightProfileManager:
         profile_path = await self.get_profile_path(profile_name)
         os.makedirs(profile_path, exist_ok=True)
 
+        REAL_CHROME_UA = (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/136.0.7103.25 Safari/537.36"
+        )
         # Set up default options
         options = {
             "user_data_dir": profile_path,
             "headless": headless,
             "accept_downloads": True,
+            "ignore_https_errors": True,  # ← trust all HTTPS certs
+            "user_agent": REAL_CHROME_UA,
+            "viewport": {"width": 1280, "height": 800},
+            "args": [
+                f"--profile-directory={profile_name}",
+
+                "--no-first-run",
+                "--no-default-browser-check",
+
+                "--no-sandbox",
+                "--disable-blink-features=AutomationControlled",  # hide infobar
+                "--disable-infobars",  # older flag
+                "--disable-web-security",
+                "--disable-features=IsolateOrigins,site-per-process",
+            ],
         }
+
+        if browser_type == "chromium":
+            options['channel'] = "chrome"
+
         # Update with any additional options
         options.update(kwargs)
 
@@ -178,6 +202,10 @@ class PlaywrightProfileManager:
 
         # Store the active context
         self.active_contexts[profile_name] = context
+
+        await context.add_init_script(
+            """Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"""
+        )
 
         return context
 
