@@ -1,0 +1,6 @@
+watchdog==3.0.0
+redis==5.0.1
+pydantic==2.5.2
+aiohttp==3.9.1
+playwright==1.40.0
+

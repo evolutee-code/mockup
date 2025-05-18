@@ -1,0 +1,24 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+.idea/
+
+.venv/
+app/package/.env
+/logs/
+/database/
+.pytest_cache/
+
+
+*/*/__pycache__/
+
+/build
+
+/app/playwright_profiles
+/playwright_profiles
+/caching
